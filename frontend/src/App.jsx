@@ -197,8 +197,7 @@ function VectorSearch({ analysis }) {
     <section className="card">
       <h2><Icon name="search" /> Vector Search Chamber</h2>
       <p className="muted">
-        This is real backend semantic search over indexed repo chunks. It uses ChromaDB if available,
-        otherwise the built-in vector store fallback.
+        This is real backend semantic search over indexed repository chunks. The backend reports the active vector backend for every query.
       </p>
       <div className="input-row">
         <input value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -304,7 +303,7 @@ function Checklist({ analysis }) {
     ["Architecture summary generated", !!analysis?.architecture_summary],
     ["Good First PR files scored", (analysis?.good_first_files || []).length > 0],
     ["Risky files identified", (analysis?.risky_files || []).length > 0],
-    ["Official IBM Bob report exported manually", false],
+    ["Bob artifacts saved", false],
   ];
 
   return (
@@ -407,7 +406,7 @@ export default function App() {
         </>
       )}
 
-      <footer>FirstPR Academy · Bob-powered first contribution workflow · Full-stack + vector search + artifact vault</footer>
+      <footer>FirstPR Academy · Turn unfamiliar repositories into safe first contributions</footer>
     </main>
   );
 }

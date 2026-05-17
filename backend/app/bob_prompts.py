@@ -10,7 +10,7 @@ def bullet_files(items):
             lines.append(f"- {item.get('file')}: {item.get('reason', '')}")
         else:
             lines.append(f"- {item}")
-    return "\\n".join(lines)
+    return "\n".join(lines)
 
 
 def generate_bob_prompts(analysis: Dict[str, Any]) -> Dict[str, str]:

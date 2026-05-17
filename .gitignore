@@ -3,14 +3,19 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
-data/
 *.db
+backend/data/
 
 # Node
 node_modules/
+frontend/node_modules/
 dist/
+frontend/dist/
 .env.local
+package-lock.json
 
-# OS
+# OS/editor
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
