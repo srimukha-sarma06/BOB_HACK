@@ -1,95 +1,118 @@
 # FirstPR Academy
 
-**FirstPR Academy** is a Bob-powered developer onboarding product for hackathons.
+FirstPR Academy is a Bob-powered developer onboarding product.
 
-It turns an unfamiliar GitHub repo into:
+## The Problem
+
+New contributors waste 2-4 hours understanding unfamiliar repositories before making their first safe pull request. They struggle to:
+- Identify which files are safe to edit
+- Understand the codebase architecture
+- Find good first contribution opportunities
+- Avoid breaking critical systems
+
+FirstPR Academy solves this with AI-powered static analysis and IBM Bob guidance.
+
+## The Solution
+
+It turns an unfamiliar repository into:
 
 1. a beginner-friendly repo map,
 2. a Good First PR score,
-3. real vector-search over repository chunks,
-4. Bob-ready prompts,
-5. Bob artifact storage,
-6. a final submission dashboard.
+3. semantic repo search,
+4. IBM Bob mission prompts,
+5. a Bob artifact vault,
+6. a submission-ready demo workflow.
 
-The visual style is a premium wizard-academy theme, but it uses original names and styling.
+The core idea:
 
----
-
-## What is complete in this zip?
-
-### Backend
-
-- FastAPI backend
-- GitHub repo cloning
-- Local sample repo analysis
-- Static repo analyzer
-- Good First PR scoring
-- Local vector store
-- Optional ChromaDB vector backend
-- Semantic repo search endpoint
-- Bob prompt generation
-- Bob artifact save/load endpoints
-- Optional Groq/OpenAI-compatible architecture summary
-- No PostgreSQL required
-
-### Frontend
-
-- React + Vite frontend
-- No Tailwind setup required
-- Beautiful custom CSS
-- Repo upload screen
-- Repo overview dashboard
-- Repo map
-- Real vector search tab
-- Bob missions tab
-- Bob artifact vault
-- Submission checklist
-
-### Submission material
-
-- Demo script
-- Bob report template
-- Bob prompts
-- Sample repo
+> Unknown repo → safe mission → tested PR.
 
 ---
 
-## Quick start
+## What is fixed in this version
 
-Open two terminals.
+- Handles Python, JavaScript, TypeScript, static web, C/C++, CUDA, CMake, and ML-style repos better.
+- Detects entrypoints such as `index.html`, `script.js`, `main.py`, `main.cpp`, `main.c`, `main.cu`, and DeepStream-style app files.
+- Does not treat random `.txt` config/model label files as documentation.
+- Penalizes assets, generated files, model/data files, and vendor/WASM files.
+- Skips junk files in semantic search.
+- Vector search scores are normalized to a clean 0-1 range.
+- Vite is pinned to a Node 18-compatible version.
 
-### Terminal 1: backend
+---
 
-#### Windows
+## Required keys
 
-```bat
-cd backend
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+For the core app:
+
+```txt
+No API key is required.
 ```
 
-#### Linux / macOS
+These work without keys:
+
+- repo scanning
+- scoring
+- vector search
+- sample repo demo
+- Bob prompt generation
+- artifact vault
+- public GitHub repos
+
+---
+
+## Optional keys
+
+Create:
+
+```txt
+backend/.env
+```
+
+Use this:
+
+```env
+# Optional richer architecture summaries
+GROQ_API_KEY=your_groq_key_here
+GROQ_MODEL=llama-3.1-8b-instant
+
+# Optional OpenAI alternative
+OPENAI_API_KEY=your_openai_key_here
+OPENAI_MODEL=gpt-4o-mini
+
+# Optional private GitHub repo analysis
+GITHUB_TOKEN=your_github_pat_here
+```
+
+ChromaDB is local. It does not need an API key.
+
+**Important**: IBM Bob is used through the IBM Bob IDE (external tool), not embedded in this app. You copy prompts from FirstPR Academy's "Bob Missions" tab and paste them into IBM Bob IDE, then paste Bob's responses back into the "Artifacts" tab for your submission.
+
+---
+
+## Run backend with conda
 
 ```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate
+conda activate firstpr
 pip install -r requirements.txt
+rm -rf data
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Backend docs:
+Open:
 
 ```txt
 http://127.0.0.1:8000/docs
 ```
 
-### Terminal 2: frontend
+---
+
+## Run frontend
 
 ```bash
 cd frontend
+rm -rf node_modules package-lock.json
 npm install
 npm run dev
 ```
@@ -102,92 +125,50 @@ http://127.0.0.1:5173
 
 ---
 
-## Optional LLM summary
+## Test flow
 
-The app works without an API key.
+1. Start backend.
+2. Start frontend.
+3. Click **Use sample repo instead**.
+4. Open **Overview**.
+5. Open **Repo Map**.
+6. Open **Vector Search** and try:
+   - `where should I add email validation?`
+   - `where is the main entry point?`
+   - `where is model inference handled?`
+7. Open **Bob Missions**.
+8. Copy the prompts into IBM Bob.
+9. Paste Bob outputs into **Artifacts**.
 
-If you want Groq/OpenAI-compatible architecture summaries, create:
+---
+
+## IBM Bob submission flow
+
+Use IBM Bob IDE and export Bob task/session history files.
+
+Add them to:
 
 ```txt
-backend/.env
+bob_sessions/
 ```
 
-Then add:
-
-```env
-GROQ_API_KEY=your_groq_key_here
-GROQ_MODEL=llama-3.1-8b-instant
-```
-
-or:
-
-```env
-OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-4o-mini
-```
-
----
-
-## Vector DB details
-
-The backend includes two vector modes:
-
-1. **ChromaDB mode** if `chromadb` is installed correctly.
-2. **Built-in local vector store fallback** using hashed embeddings + cosine similarity.
-
-This means the project still runs even if ChromaDB has dependency issues.
-
-Semantic search endpoint:
+Also save useful outputs in:
 
 ```txt
-POST /repos/{repo_id}/semantic-search
+submission/
 ```
 
-Example body:
+Suggested files:
 
-```json
-{
-  "query": "where should I add email validation?",
-  "top_k": 5
-}
+```txt
+submission/bob-project-review.md
+submission/bob-output-architecture.md
+submission/bob-output-task-selection.md
+submission/bob-output-implementation-plan.md
+submission/bob-output-pr-summary.md
+
+bob_sessions/exported-bob-task-history-1.md
+bob_sessions/exported-bob-task-history-1-consumption.png
 ```
 
----
-
-## How IBM Bob is used
-
-This project is intentionally designed to make Bob usage visible.
-
-Bob is used for:
-
-1. repo understanding,
-2. architecture explanation,
-3. safe first-task selection,
-4. implementation planning,
-5. test generation,
-6. PR summary generation,
-7. final Bob report export.
-
-The app generates Bob-ready missions. During the hackathon demo, open the repo in IBM Bob, paste the generated missions, let Bob act on the repo, then paste/export Bob outputs into the Artifact Vault.
-
----
-
-## Demo flow
-
-1. Start backend and frontend.
-2. Click **Use sample repo** or paste a GitHub URL.
-3. Show the Overview score.
-4. Show the Repo Map.
-5. Search in Vector Search:  
-   `where should I add email validation?`
-6. Open Bob Missions.
-7. Copy the prompts into IBM Bob.
-8. Paste Bob outputs into the Artifact Vault.
-9. Show the final checklist.
-
----
-
-## Important honest note
-
-This zip gives you the full runnable project, including vector search and artifact management.  
-But I cannot export an official IBM Bob report from your account. You must do that during the hackathon using IBM Bob and attach it to your submission if required.
+Do not commit real API keys or `.env`.
